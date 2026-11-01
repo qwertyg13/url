@@ -52,7 +52,7 @@
     </style>
 </head>
 <body>
-    
+
     <div class="container">
         <h3>🔗 Hyperlink Generator</h3>
         <p>Type a URL and press Enter:</p>
@@ -75,10 +75,42 @@
                     formattedUrl = 'https://' + rawUrl;
                 }
 
-                // Generates a standard link that will open natively inside your browser
-                document.getElementById('output-container').innerHTML = `<a href="${formattedUrl}">${formattedUrl}</a>`;
+                // Generates a link forcing target="_self" so it tries to stay in app
+                document.getElementById('output-container').innerHTML = `<a href="${formattedUrl}" target="_self">${formattedUrl}</a>`;
             }
         }
+
+        // 🛡️ THE BULLETPROOF IN-APP LOCK:
+        // This watches the entire page. Even if a loaded website forces a new window 
+        // or uses target="_blank", it catches it and locks it inside your Python app.
+        
+        // 1. Intercept mouse clicks on links
+        document.addEventListener('click', function(e) {
+            let target = e.target.closest('a');
+            if (target) {
+                // If it tries to open in a new window, disable it and load it here instead
+                if (target.target === '_blank' || target.getAttribute('target') === '_blank') {
+                    e.preventDefault();
+                    window.location.href = target.href;
+                }
+            }
+        }, true);
+
+        // 2. Intercept JavaScript code redirects (like window.open)
+        window.open = function(url) {
+            if (url) {
+                window.location.href = url;
+            }
+            return null;
+        };
+
+        // 3. Keep rewriting targets if nested tracking frames load dynamic links
+        const observer = new MutationObserver(() => {
+            document.querySelectorAll('a[target="_blank"]').forEach(link => {
+                link.setAttribute('target', '_self');
+            });
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
     </script>
 </body>
 </html>
