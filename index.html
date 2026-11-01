@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hyperlink Generator</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background: #202124; 
+            color: #fff; 
+            padding: 30px; 
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: #2f3136;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 450px;
+        }
+        h3 { margin-top: 0; color: #7289da; font-size: 20px; text-align: center; }
+        input { 
+            width: calc(100% - 24px); 
+            background: #36393f; 
+            border: 1px solid #202124; 
+            color: #fff; 
+            padding: 10px 12px; 
+            border-radius: 6px; 
+            font-size: 15px; 
+            outline: none; 
+            margin-bottom: 20px;
+            margin-top: 5px;
+        }
+        input:focus { border-color: #7289da; }
+        #output-container { 
+            background: #202124; 
+            padding: 15px; 
+            border-radius: 6px; 
+            min-height: 40px; 
+            word-break: break-all;
+            text-align: center;
+        }
+        a { color: #00b0f4; text-decoration: none; font-weight: bold; font-size: 16px; }
+        a:hover { text-decoration: underline; }
+        p { margin: 0; font-size: 14px; color: #b9bbbe; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h3>🔗 Hyperlink Generator</h3>
+        <p>Type a URL and press Enter:</p>
+        <input type="text" id="url-input" placeholder="e.g., wikipedia.org" onkeydown="generateLink(event)">
+
+        <p style="margin-bottom: 5px;">Generated Result:</p>
+        <div id="output-container">
+            <span id="placeholder-text" style="color: #72767d; font-style: italic; font-size: 14px;">Your link will appear here...</span>
+        </div>
+    </div>
+
+    <script>
+        function generateLink(e) {
+            if (e.key === 'Enter') {
+                let rawUrl = document.getElementById('url-input').value.trim();
+                if (!rawUrl) return;
+
+                let formattedUrl = rawUrl;
+                if (!rawUrl.startsWith('http://') && !rawUrl.startsWith('https://')) {
+                    formattedUrl = 'https://' + rawUrl;
+                }
+
+                // Generates a standard link that will open natively inside your browser
+                document.getElementById('output-container').innerHTML = `<a href="${formattedUrl}">${formattedUrl}</a>`;
+            }
+        }
+    </script>
+</body>
+</html>
